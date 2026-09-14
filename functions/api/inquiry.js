@@ -1,8 +1,8 @@
 /**
- * Edutab — Cloudflare Pages Function:  POST /api/inquiry
+ * Educrypt — Cloudflare Pages Function:  POST /api/inquiry
  * ------------------------------------------------------------------
  * Receives the contact-form payload, validates it, rate-limits it and
- * delivers it to the Edutab WhatsApp line.
+ * delivers it to the Educrypt WhatsApp line.
  *
  * Three delivery modes, picked automatically from the secrets you set:
  *
@@ -52,7 +52,7 @@ const PHONE_RE = /^[0-9+\-\s()]{7,20}$/;
  *  identical whichever delivery mode is active. */
 export function formatInquiry(p) {
   const lines = [
-    "*NEW EDUTAB INQUIRY*",
+    "*NEW EDUCRYPT INQUIRY*",
     "--------------------------------",
     `*Name:* ${clean(p.name)}`,
     `*Institution:* ${clean(p.org)}`,
@@ -199,5 +199,5 @@ const deepLink = (text) => `https://wa.me/${DESTINATION}?text=${encodeURICompone
 /* GET /api/inquiry -> tiny health probe used by the page to decide whether
    the endpoint exists (static hosts without Functions answer 404 instead). */
 export function onRequestGet() {
-  return json({ ok: true, service: "edutab-inquiry", version: 1, endpoint: "/api/inquiry" });
+  return json({ ok: true, service: "educrypt-inquiry", version: 1, endpoint: "/api/inquiry" });
 }

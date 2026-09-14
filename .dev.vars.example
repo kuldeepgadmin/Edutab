@@ -1,6 +1,6 @@
 # Copy to .dev.vars for `wrangler pages dev`, and set the same keys as
 # Pages secrets for production:
-#   npx wrangler pages secret put WA_CLOUD_API_TOKEN --project-name edutab
+#   npx wrangler pages secret put WA_CLOUD_API_TOKEN --project-name educrypt
 #
 # Leave ALL of these unset and the form still works: the function replies
 # with a wa.me deep link and the visitor's WhatsApp app finishes the job.

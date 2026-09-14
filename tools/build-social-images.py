@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deterministically build Edutab's social/brand raster assets with PIL.
+"""Deterministically build Educrypt's social/brand raster assets with PIL.
 
 No network, no AI raster: brand colours + system font, so re-running always
 reproduces the same files. Output sizes follow platform guidance:
@@ -107,7 +107,7 @@ def cover(w, h, path, *, square=False):
     # ---- logo + wordmark, sized to never overlap ----
     f_mark = int(min(h * 0.135, w * 0.135))
     mark(d, pad, pad, f_mark, radius=int(f_mark * 0.42), lw=max(3, int(f_mark * 0.16)))
-    word_txt = "Edutab"
+    word_txt = "Educrypt"
     word = fit(d, word_txt, "DejaVuSans-Bold.ttf", int(inner - f_mark - w * 0.022), int(h * 0.072))
     put(d, (pad + f_mark + int(w * 0.022), pad + int(f_mark * 0.16)), word_txt, word, WHITE, "wordmark")
 

@@ -1,8 +1,8 @@
 /* ============================================================
-   Edutab — shared behavior
+  Educrypt — shared behavior
    1) Mobile navigation
    2) Content protection (copy / paste / print / capture deterrence)
-   3) Contact form -> delivered to the Edutab WhatsApp number
+  3) Contact form -> delivered to the Educrypt WhatsApp number
    ============================================================ */
 
 (function () {
@@ -82,7 +82,7 @@
   shield.className = "privacy-shield";
   shield.innerHTML =
     "<div><b>Content protected</b><span>Screen capture and export are disabled on this site. " +
-    "Please request material directly from the Edutab office.</span></div>";
+    "Please request material directly from the Educrypt office.</span></div>";
   doc.addEventListener("DOMContentLoaded", function () {
     doc.body.appendChild(shield);
   });
@@ -256,7 +256,7 @@
 
   function buildMessage() {
     var lines = [
-      "*NEW EDUTAB INQUIRY*",
+      "*NEW EDUCRYPT INQUIRY*",
       "--------------------------------",
       "*Name:* " + value("fullName"),
       "*Institution:* " + value("orgName"),
@@ -270,7 +270,7 @@
     lines.push("*Operational requirements:*");
     lines.push(value("message") || "—");
     lines.push("--------------------------------");
-    lines.push("Source: Edutab website inquiry form");
+    lines.push("Source: Educrypt website inquiry form");
     lines.push("Received: " + new Date().toLocaleString());
     return lines.join("\n");
   }
@@ -340,7 +340,7 @@
           }
           if (j.delivered) {
             finish(
-              "Thank you — your inquiry was delivered to the Edutab technical team and logged " +
+              "Thank you — your inquiry was delivered to the Educrypt technical team and logged " +
                 "on our side. We reply on working days, Monday to Saturday.",
               "Inquiry sent ✓"
             );
@@ -371,7 +371,7 @@
       phone: value("phone"),
       interests: list,
       message: value("message"),
-      source: (location.hostname || "edutab") + location.pathname,
+      source: (location.hostname || "educrypt") + location.pathname,
       _company: value("hpCompany") // honeypot: always empty for humans
     };
   }
@@ -414,7 +414,7 @@
     finish(
       "Thank you — your inquiry is ready in WhatsApp (" +
         WA_DISPLAY +
-        "). Press send there to reach the Edutab technical team. Working days: Monday to Saturday.",
+        "). Press send there to reach the Educrypt technical team. Working days: Monday to Saturday.",
       "Ready in WhatsApp \u2014 press send ✓"
     );
   }

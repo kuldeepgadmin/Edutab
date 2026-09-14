@@ -1,5 +1,5 @@
 /* ============================================================
-   Edutab — SEO resolver
+  Educrypt — SEO resolver
    ------------------------------------------------------------
    Canonical / og:url / og:image must be ABSOLUTE urls, which a
    repo without a chosen domain cannot hard-code yet. So:
@@ -17,15 +17,15 @@
   var d = document;
 
   /* --- the one config value; replaced by tools/set-origin.py --- */
-  var SITE_ORIGIN = "__EDUTAB_ORIGIN__";
-  var BAKED = SITE_ORIGIN.indexOf("__EDUTAB_") !== 0;
+  var SITE_ORIGIN = "__EDUCRYPT_ORIGIN__";
+  var BAKED = SITE_ORIGIN.indexOf("__EDUCRYPT_") !== 0;
 
   /* never emit file:// or other non-web origins (local preview, jsdom) */
   if (!BAKED && !/^https?:$/.test(location.protocol)) return;
 
   var origin = BAKED ? SITE_ORIGIN.replace(/\/+$/, "") : (location.protocol + "//" + location.host);
 
-  /* "https://host/edutab/services.html" -> "https://host/edutab/services.html"
+  /* "https://host/educrypt/services.html" -> "https://host/educrypt/services.html"
      ".../index.html" and ".../" -> ".../"  (one URL per page, no ?/# noise) */
   function canonicalFor(href) {
     var clean = String(href || location.pathname).replace(/[#?].*$/, "");
@@ -72,7 +72,7 @@
     upsertMeta("twitter:image", img);
     upsertMeta("og:image:width", "1200");
     upsertMeta("og:image:height", "630");
-    upsertMeta("og:image:alt", "Edutab — Campus & Enterprise Management Solutions");
+    upsertMeta("og:image:alt", "Educrypt — Campus & Enterprise Management Solutions");
   }
 
   /* give JSON-LD blocks their absolute ids/urls if they opted in */

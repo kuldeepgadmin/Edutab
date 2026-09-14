@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Bake Edutab's site origin into every page, then build the sitemap.
+"""Bake Educrypt's site origin into every page, then build the sitemap.
 
-    python3 tools/set-origin.py https://edutab.in
-    python3 tools/set-origin.py https://your-name.github.io/edutab
+    python3 tools/set-origin.py https://educrypt.in
+    python3 tools/set-origin.py https://your-name.github.io/educrypt
     python3 tools/set-origin.py --check
 
 Writes, idempotently:
@@ -22,7 +22,7 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TOKEN = "__EDUTAB_ORIGIN__"
+TOKEN = "__EDUCRYPT_ORIGIN__"
 BEGIN = "<!-- SEO:BEGIN (written by tools/set-origin.py) -->"
 END = "<!-- SEO:END -->"
 
@@ -30,11 +30,11 @@ ALL_PAGES = ["index.html", "about.html", "services.html", "workflow.html",
              "contact.html", "404.html"]
 
 PAGES = {
-    "index.html":     ("Edutab — Enterprise & Campus Management Solutions", 1.0, "weekly"),
-    "about.html":     ("About Edutab — 15 Years of Technical Execution",     0.8, "monthly"),
-    "services.html":  ("Edutab Services — ERP, Websites, Portals, Fees",     0.9, "weekly"),
-    "workflow.html":  ("How Edutab Works — 4-Step Deployment Model",         0.7, "monthly"),
-    "contact.html":   ("Contact Edutab — Book a Consultation",               0.9, "monthly"),
+    "index.html":     ("Educrypt — Enterprise & Campus Management Solutions", 1.0, "weekly"),
+    "about.html":      ("About Educrypt — 15 Years of Technical Execution",     0.8, "monthly"),
+    "services.html":  ("Educrypt Services — ERP, Websites, Portals, Fees",     0.9, "weekly"),
+    "workflow.html":  ("How Educrypt Works — 4-Step Deployment Model",         0.7, "monthly"),
+    "contact.html":   ("Contact Educrypt — Book a Consultation",               0.9, "monthly"),
 }
 
 
@@ -44,8 +44,8 @@ def norm(origin):
     origin = origin.strip().rstrip("/")
     if not re.match(r"^https?://[^/]+(/[^/?\#]*)*$", origin):
         sys.exit(f"error: '{origin}' must start with http:// or https:// and contain a host, e.g.\n"
-                 f"       https://edutab.in\n"
-                 f"       https://your-name.github.io/edutab\n"
+                 f"       https://educrypt.in\n"
+                 f"       https://your-name.github.io/educrypt\n"
                  f"  (no query string, no spaces, no trailing slash needed)")
     return origin
 
@@ -65,7 +65,7 @@ def block(origin, page, title):
         f'<meta property="og:image:secure_url" content="{img}">',
         f'<meta property="og:image:width" content="1200">',
         f'<meta property="og:image:height" content="630">',
-        f'<meta property="og:image:alt" content="Edutab — Campus & Enterprise Management Solutions">',
+        f'<meta property="og:image:alt" content="Educrypt — Campus & Enterprise Management Solutions">',
         f'<meta name="twitter:image" content="{img}">',
         f'<meta name="twitter:url" content="{u}">',
         END,
@@ -98,16 +98,16 @@ def patch_pages(origin):
     for page in list(PAGES) + ["404.html"]:
         p = os.path.join(ROOT, page)
         s = open(p, encoding="utf-8").read()
-        title = PAGES.get(page, ("Edutab — Page not found", 0, ""))[0]
+        title = PAGES.get(page, ("Educrypt — Page not found", 0, ""))[0]
         new = block(origin, page, title) if page != "404.html" else BEGIN + "\n" + END
         if BEGIN in s:
             s2 = re.sub(re.escape(BEGIN) + r".*?" + re.escape(END), new, s, flags=re.S)
         else:  # markers missing -> insert before </head>
             s2 = s.replace("</head>", new + "\n</head>", 1)
-        s2 = s2.replace('name="edutab:origin" content="' + TOKEN + '"',
-                        'name="edutab:origin" content="' + origin + '"')
-        s2 = re.sub(r'name="edutab:origin" content="[^"]*"',
-                    'name="edutab:origin" content="' + origin + '"', s2)
+        s2 = s2.replace('name="educrypt:origin" content="' + TOKEN + '"',
+                'name="educrypt:origin" content="' + origin + '"')
+        s2 = re.sub(r'name="educrypt:origin" content="[^"]*"',
+                'name="educrypt:origin" content="' + origin + '"', s2)
         s2 = bake_ld(s2, origin)
         if s2 != s:
             open(p, "w", encoding="utf-8").write(s2)

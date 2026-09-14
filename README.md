@@ -1,6 +1,6 @@
-# Edutab — Campus & Enterprise Management Solutions
+# Educrypt — Campus & Enterprise Management Solutions
 
-A five-page static website for **Edutab**, a technology consultancy delivering ERP setup, website
+A five-page static website for **Educrypt**, a technology consultancy delivering ERP setup, website
 management, campus portals and fee-gateway integration for schools and colleges.
 
 Built as a dependency-free static site (plain HTML + CSS + vanilla JS) so it can be pushed straight
@@ -52,11 +52,11 @@ free TLS.
 ```bash
 npm i -g wrangler            # or use npx wrangler ...
 wrangler login
-wrangler pages deploy . --project-name edutab
+wrangler pages deploy . --project-name educrypt
 ```
 
 That publishes the folder as-is and registers `functions/api/inquiry.js` as the
-form endpoint. Output: `https://edutab.pages.dev` (plus a preview URL per deploy).
+form endpoint. Output: `https://educrypt.pages.dev` (plus a preview URL per deploy).
 
 ### B. Continuous deploys from GitHub
 
@@ -64,9 +64,9 @@ form endpoint. Output: `https://edutab.pages.dev` (plus a preview URL per deploy
 2. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → pick the repo.
 3. Build settings: **Build command = (blank)**, **Build output directory = `/`**.
 4. Save → deploy. Every push to `main` redeploys; every PR gets a preview URL.
-5. **Custom domain**: Pages project → *Custom domains* → add `edutab.in`. Cloudflare
+5. **Custom domain**: Pages project → *Custom domains* → add `educrypt.in`. Cloudflare
    issues and renews the certificate and puts the zone's DNS, DDoS shielding and WAF
-   in front automatically. Then run `python3 tools/set-origin.py https://edutab.in`.
+  in front automatically. Then run `python3 tools/set-origin.py https://educrypt.in`.
 
 ### C. Try the form endpoint locally
 
@@ -116,7 +116,7 @@ in `assets/js/app.js`.
 ## Appendix: GitHub Pages manual setup
 
 ```bash
-git init && git add . && git commit -m "Edutab website"
+git init && git add . && git commit -m "Educrypt website"
 git branch -M main
 git remote add origin https://github.com/<your-username>/edutab.git
 git push -u origin main
@@ -146,9 +146,9 @@ Two things cover that gap:
 2. **When you settle on a domain, bake it in** so crawlers see the tags without running JS:
 
 ```bash
-python3 tools/set-origin.py https://edutab.in
+python3 tools/set-origin.py https://educrypt.in
 # or a GitHub Pages project site (subpath supported):
-python3 tools/set-origin.py https://your-name.github.io/edutab
+python3 tools/set-origin.py https://your-name.github.io/Edutab
 ```
 
 That single command writes, idempotently:
@@ -166,7 +166,7 @@ python3 tools/set-origin.py --check
 ```
 
 It fails loudly if a canonical disagrees with the baked origin, if an old host survives a
-domain switch, if `sitemap.xml` is stale, or if the `__EDUTAB_ORIGIN__` token is still
+domain switch, if `sitemap.xml` is stale, or if the `__EDUCRYPT_ORIGIN__` token is still
 sitting in a file. Changing domains later is safe: previous absolute URLs inside JSON-LD
 are normalised back and re-baked.
 
@@ -241,4 +241,4 @@ genuinely confidential material, put it behind authenticated access.
 └── README.md
 ```
 
-© Edutab. All rights reserved.
+© Educrypt. All rights reserved.

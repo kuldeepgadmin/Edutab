@@ -1,4 +1,4 @@
-# Edutab — static site
+# Educrypt — static site
 User-agent: *
 Allow: /
 
