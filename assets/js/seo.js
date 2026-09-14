@@ -17,7 +17,7 @@
   var d = document;
 
   /* --- the one config value; replaced by tools/set-origin.py --- */
-  var SITE_ORIGIN = "__EDUCRYPT_ORIGIN__";
+  var SITE_ORIGIN = "https://educrypt.in";
   var BAKED = SITE_ORIGIN.indexOf("__EDUCRYPT_") !== 0;
 
   /* never emit file:// or other non-web origins (local preview, jsdom) */

@@ -2,5 +2,4 @@
 User-agent: *
 Allow: /
 
-# After deploying, point this at your live domain:
-# Sitemap: https://<your-domain>/sitemap.xml
+Sitemap: https://educrypt.in/sitemap.xml
