@@ -1,0 +1,19 @@
+# Copy to .dev.vars for `wrangler pages dev`, and set the same keys as
+# Pages secrets for production:
+#   npx wrangler pages secret put WA_CLOUD_API_TOKEN --project-name edutab
+#
+# Leave ALL of these unset and the form still works: the function replies
+# with a wa.me deep link and the visitor's WhatsApp app finishes the job.
+
+# --- Option 1: WhatsApp Cloud API (official, true server-side delivery) ---
+WA_CLOUD_API_TOKEN=
+WA_PHONE_NUMBER_ID=
+
+# --- Option 2: CallMeBot (free bridge, one-time opt-in, see README) ------
+CALLMEBOT_API_KEY=
+CALLMEBOT_PHONE=+919399365399
+
+# --- Option 3: Cloudflare Turnstile human check (recommended if spammed) -
+#   both values come from Cloudflare Dashboard -> Turnstile
+TURNSTILE_SITEKEY=
+TURNSTILE_SECRET=

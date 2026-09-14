@@ -1,0 +1,15 @@
+Edutab website — source and content license
+
+1. Site content (all copy, layout, design system and code in this repository) is the
+   property of Edutab and is protected. All rights are not granted by public access.
+
+2. The deploying party (Edutab or its authorized client) may host, modify and deploy
+   these files for its own business purposes without restriction.
+
+3. Copying, redistributing, reselling, scraping or republishing the content or design
+   to a third party requires written permission from Edutab.
+
+4. Technical note: the client-side protections in assets/js/app.js are deterrents.
+   Nothing on a public web page can be made physically impossible to reproduce.
+
+Contact: use the inquiry form on the Contact page.
