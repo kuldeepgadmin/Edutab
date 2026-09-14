@@ -9,6 +9,8 @@ desktop.ini
 # Local scratch
 *.log
 node_modules/
+__pycache__/
+*.py[cod]
 
 # Wrangler / Cloudflare
 .wrangler/
