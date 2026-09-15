@@ -11,6 +11,7 @@
   /* ----------------------------- config ----------------------------- */
   var EMAIL_TO = "connect@educrypt.in";
   var EMAIL_SUBJECT = "New Educrypt Inquiry";
+  var FORMSUBMIT_URL = "https://formsubmit.co/ajax/" + EMAIL_TO;
 
   var doc = document;
 
@@ -297,58 +298,56 @@
       return;
     }
 
-    // Prefer the Cloudflare Pages Function when the site has one deployed.
-    var localUrl = "mailto:" + EMAIL_TO + "?subject=" + encodeURIComponent(EMAIL_SUBJECT) + "&body=" + encodeURIComponent(buildMessage());
-
-    if (typeof fetch === "function") {
-      busy(true);
-      fetch("/api/inquiry", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload()),
-        credentials: "same-origin"
-      })
-        .then(function (r) {
-          return r
-            .json()
-            .then(function (j) { return { status: r.status, body: j }; })
-            .catch(function () { return { status: r.status, body: null }; });
-        })
-        .then(function (res) {
-          busy(false);
-          var j = res.body;
-          if (res.status === 404 || !j || j.ok !== true) {
-            // no function deployed (plain static host) or it rejected the shape
-            if (j && j.ok === false && j.errors && j.errors.length) {
-              setStatus("err", j.errors.join(" "));
-              return;
-            }
-            handoff(localUrl);
-            return;
-          }
-          if (j.mode === "discarded") {
-            // honeypot tripped server-side: acknowledge quietly, open nothing
-            finish("Thank you — your inquiry was received.");
-            return;
-          }
-          if (j.delivered) {
-            finish(
-              "Thank you — your inquiry was delivered to the Educrypt technical team and logged " +
-                "on our side. We reply on working days, Monday to Saturday.",
-              "Inquiry sent ✓"
-            );
-            return;
-          }
-          handoff(j.url || localUrl);
-        })
-        .catch(function () {
-          busy(false);
-          handoff(localUrl); // network hiccup: never lose the enquiry
-        });
+    if (typeof fetch !== "function") {
+      setStatus("err", "Your browser does not support submitting this form. Please email us at connect@educrypt.in.");
       return;
     }
 
-    handoff(localUrl);
+    busy(true);
+    fetch(FORMSUBMIT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify({
+        _subject: EMAIL_SUBJECT,
+        name: value("fullName"),
+        institution: value("orgName"),
+        email: value("email"),
+        phone: value("phone"),
+        interest: interests().join("\n"),
+        message: value("message"),
+        source: (location.hostname || "educrypt") + location.pathname,
+        _captcha: "false"
+      })
+    })
+      .then(function (r) {
+        return r
+          .json()
+          .then(function (j) { return { status: r.status, body: j }; })
+          .catch(function () { return { status: r.status, body: null }; });
+      })
+      .then(function (res) {
+        busy(false);
+        var j = res.body;
+        if (res.status >= 200 && res.status < 300) {
+          finish(
+            "Thank you — your inquiry was sent successfully to the Educrypt technical team. We will reply on working days, Monday to Saturday.",
+            "Inquiry sent ✓"
+          );
+          return;
+        }
+        if (j && j.message) {
+          setStatus("err", j.message);
+          return;
+        }
+        setStatus("err", "The form could not be sent right now. Please email connect@educrypt.in directly.");
+      })
+      .catch(function () {
+        busy(false);
+        setStatus("err", "The form could not be sent right now. Please email connect@educrypt.in directly.");
+      });
   });
 
   /* ---- submission helpers ---- */
@@ -387,27 +386,9 @@
     }
   }
 
-  /* Deep-link mode: hand the composed message to the visitor's default email client. */
+  /* FormSubmit is the only sending method configured for this site. */
   function handoff(url) {
-    var win = null;
-    try {
-      win = window.open(url, "_blank", "noopener,width=620,height=760");
-    } catch (e) {
-      win = null;
-    }
-    if (!win) {
-      form.reset();
-      setStatus(
-        "ok",
-        'Your email client may be blocked by the browser. <a href="' + url + '" target="_blank" rel="noopener">Click here to email the Educrypt team →</a>'
-      );
-      window.location.href = url;
-      return;
-    }
-    finish(
-      "Thank you — your inquiry is ready in your email app. Press send to reach the Educrypt technical team at connect@educrypt.in.",
-      "Ready to email ✓"
-    );
+    return;
   }
 
   /* Character feedback for the message box */
