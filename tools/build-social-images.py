@@ -214,10 +214,76 @@ def app_icon(px, path, rounded=True):
     return img.size
 
 
+def status_cover(path):
+    """Build a portrait WhatsApp Status card with generous mobile-safe margins."""
+    w, h = 1080, 1920
+    pad = 96
+    img = Image.new("RGB", (w, h), NAVY)
+    d = ImageDraw.Draw(img)
+    grid(d, w, h, step=64)
+
+    glow = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(glow).ellipse([w * 0.20, h * 0.12, w * 1.30, h * 0.66], fill=105)
+    from PIL import ImageFilter
+    img = Image.composite(Image.new("RGB", (w, h), VIOLET), img,
+                          glow.filter(ImageFilter.GaussianBlur(130)))
+    d = ImageDraw.Draw(img)
+    grid(d, w, h, step=64)
+
+    logo_size = 126
+    mark(d, pad, 132, logo_size, radius=36)
+    word = font("DejaVuSans-Bold.ttf", 66)
+    d.text((pad + logo_size + 34, 158), "Educrypt", font=word, fill=WHITE)
+
+    eyebrow = font("DejaVuSans-Bold.ttf", 28)
+    d.text((pad, 430), "CAMPUS SYSTEMS  /  ERP  /  WEB OPERATIONS",
+           font=eyebrow, fill=(205, 183, 226))
+
+    headline_font = font("DejaVuSans-Bold.ttf", 92)
+    headline = "Smarter systems\nfor stronger\ninstitutions."
+    y = 520
+    for line in headline.splitlines():
+        d.text((pad, y), line, font=headline_font, fill=WHITE)
+        y += 112
+
+    body_font = font("DejaVuSans.ttf", 34)
+    body = "Integrated technology for schools and colleges."
+    d.text((pad, 930), body, font=body_font, fill=MUTED)
+
+    line_y = 1060
+    d.rectangle([pad, line_y, w - pad, line_y + 3], fill=VIOLET_LT)
+    services = [
+        ("01", "ERP setup & consultation"),
+        ("02", "Website management"),
+        ("03", "Parent & staff portals"),
+        ("04", "Fee gateway integration"),
+    ]
+    number_font = font("DejaVuSans-Bold.ttf", 27)
+    service_font = font("DejaVuSans-Bold.ttf", 37)
+    service_y = 1130
+    for number, label in services:
+        d.text((pad, service_y), number, font=number_font, fill=VIOLET_LT)
+        d.text((pad + 82, service_y - 4), label, font=service_font, fill=WHITE)
+        service_y += 100
+
+    strip_top = 1660
+    d.rectangle([0, strip_top, w, h], fill=VIOLET)
+    cta_font = font("DejaVuSans-Bold.ttf", 38)
+    d.text((pad, strip_top + 88), "Build the right foundation.", font=cta_font, fill=WHITE)
+    url_font = font("DejaVuSans-Bold.ttf", 53)
+    d.text((pad, strip_top + 172), "educrypt.in", font=url_font, fill=WHITE)
+    detail_font = font("DejaVuSans.ttf", 27)
+    d.text((pad, strip_top + 270), "15+ years of technical execution", font=detail_font, fill=(236, 228, 246))
+
+    img.save(path, "PNG", optimize=True)
+    return img.size
+
+
 if __name__ == "__main__":
     made = []
     made.append(("og-cover.png", cover(1200, 630, os.path.join(OUT, "og-cover.png"))))
     made.append(("og-cover-square.png", cover(640, 640, os.path.join(OUT, "og-cover-square.png"), square=True)))
+    made.append(("whatsapp-status.png", status_cover(os.path.join(OUT, "whatsapp-status.png"))))
     made.append(("apple-touch-icon.png", app_icon(180, os.path.join(OUT, "apple-touch-icon.png"))))
     made.append(("icon-512.png", app_icon(512, os.path.join(OUT, "icon-512.png"))))
     for n, s in made:

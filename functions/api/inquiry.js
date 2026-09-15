@@ -2,25 +2,11 @@
  * Educrypt — Cloudflare Pages Function:  POST /api/inquiry
  * ------------------------------------------------------------------
  * Receives the contact-form payload, validates it, rate-limits it and
- * delivers it to the Educrypt WhatsApp line.
- *
- * Three delivery modes, picked automatically from the secrets you set:
- *
- *   1. WhatsApp Cloud API  -> WA_CLOUD_API_TOKEN + WA_PHONE_NUMBER_ID
- *      True server-side delivery. The visitor never leaves your site.
- *   2. CallMeBot           -> CALLMEBOT_API_KEY
- *      Free bridge, needs a one-time opt-in (see README).
- *   3. None of the above   -> the function returns a wa.me deep link and
- *      the browser hands it to WhatsApp. Works with zero configuration.
- *
- * Free-tier budget: Workers/Pages Functions get 100,000 requests/day,
- * which is ~3,000 form submissions a day. This function does 1 subrequest
- * per submission (0 when running in deep-link mode), so the endpoint is
- * nowhere near the limit for a school-consultancy site.
+ * opens a mailto draft to the Educrypt email address.
  * ------------------------------------------------------------------
  */
 
-const DESTINATION = "919399365399"; // +91 93993 65399
+const DESTINATION = "connect@educrypt.in";
 const MAX_INTERESTS = 5;
 const MAX_MESSAGE = 1200;
 
@@ -110,36 +96,6 @@ async function throttled(ip, env, waitUntil) {
   return state.c > RATE_LIMIT.max;
 }
 
-async function sendViaCloudApi(text, env) {
-  const res = await fetch(`https://graph.facebook.com/v21.0/${env.WA_PHONE_NUMBER_ID}/messages`, {
-    method: "POST",
-    headers: {
-      authorization: `Bearer ${env.WA_CLOUD_API_TOKEN}`,
-      "content-type": "application/json"
-    },
-    body: JSON.stringify({
-      messaging_product: "whatsapp",
-      to: DESTINATION,
-      type: "text",
-      text: { preview_url: false, body: text }
-    })
-  });
-  return { ok: res.ok, status: res.status, body: res.ok ? "" : (await res.text()).slice(0, 300) };
-}
-
-async function sendViaCallMeBot(text, env) {
-  const url =
-    "https://api.callmebot.com/whatsapp.php?" +
-    new URLSearchParams({
-      phone: env.CALLMEBOT_PHONE || "+" + DESTINATION,
-      text,
-      apikey: env.CALLMEBOT_API_KEY
-    });
-  const res = await fetch(url);
-  const body = await res.text();
-  return { ok: res.ok && !/error|fail/i.test(body), status: res.status, body: body.slice(0, 200) };
-}
-
 export async function onRequestPost(context) {
   const { request, env, waitUntil } = context;
 
@@ -176,25 +132,10 @@ export async function onRequestPost(context) {
 
   const text = formatInquiry(p);
 
-  if (env.WA_CLOUD_API_TOKEN && env.WA_PHONE_NUMBER_ID) {
-    const r = await sendViaCloudApi(text, env);
-    if (r.ok) return json({ ok: true, delivered: true, mode: "whatsapp-cloud-api" });
-    // never lose a lead: fall through to the deep link and log the failure
-    console.error("wa cloud api failed", r.status, r.body);
-    return json({ ok: true, delivered: false, mode: "deeplink", url: deepLink(text) });
-  }
-
-  if (env.CALLMEBOT_API_KEY) {
-    const r = await sendViaCallMeBot(text, env);
-    if (r.ok) return json({ ok: true, delivered: true, mode: "callmebot" });
-    console.error("callmebot failed", r.status, r.body);
-    return json({ ok: true, delivered: false, mode: "deeplink", url: deepLink(text) });
-  }
-
-  return json({ ok: true, delivered: false, mode: "deeplink", url: deepLink(text) });
+  return json({ ok: true, delivered: false, mode: "mailto", url: deepLink(text) });
 }
 
-const deepLink = (text) => `https://wa.me/${DESTINATION}?text=${encodeURIComponent(text)}`;
+const deepLink = (text) => `mailto:${DESTINATION}?subject=${encodeURIComponent("New Educrypt Inquiry")}&body=${encodeURIComponent(text)}`;
 
 /* GET /api/inquiry -> tiny health probe used by the page to decide whether
    the endpoint exists (static hosts without Functions answer 404 instead). */

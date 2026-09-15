@@ -2,17 +2,15 @@
   Educrypt — shared behavior
    1) Mobile navigation
    2) Content protection (copy / paste / print / capture deterrence)
-  3) Contact form -> delivered to the Educrypt WhatsApp number
+  3) Contact form -> delivered to the Educrypt email address
    ============================================================ */
 
 (function () {
   "use strict";
 
   /* ----------------------------- config ----------------------------- */
-  // Inquiries from the contact form are delivered to this WhatsApp number.
-  // International format, digits only. Change here if the number changes.
-  var WHATSAPP_NUMBER = "919399365399";
-  var WA_DISPLAY = "+91 93993 65399";
+  var EMAIL_TO = "connect@educrypt.in";
+  var EMAIL_SUBJECT = "New Educrypt Inquiry";
 
   var doc = document;
 
@@ -222,12 +220,7 @@
     if (e.detail > 1) e.preventDefault(); // block double-click select
   });
 
-  // Expose the WhatsApp number where pages want to show it
-  Array.prototype.forEach.call(doc.querySelectorAll("[data-wa-number]"), function (el) {
-    el.textContent = el.hasAttribute("data-display") ? WA_DISPLAY : WHATSAPP_NUMBER;
-  });
-
-  /* ================= 2. Contact form -> WhatsApp delivery ================= */
+  /* ================= 2. Contact form -> email delivery ================= */
   var form = doc.getElementById("inquiryForm");
   if (!form) return;
 
@@ -276,7 +269,7 @@
   }
 
   form.addEventListener("submit", function (e) {
-    e.preventDefault(); // never posts to a server — routed to WhatsApp instead
+    e.preventDefault(); // never posts to a server — routed to email instead
 
     var required = [
       ["fullName", "Full name"],
@@ -305,7 +298,7 @@
     }
 
     // Prefer the Cloudflare Pages Function when the site has one deployed.
-    var localUrl = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(buildMessage());
+    var localUrl = "mailto:" + EMAIL_TO + "?subject=" + encodeURIComponent(EMAIL_SUBJECT) + "&body=" + encodeURIComponent(buildMessage());
 
     if (typeof fetch === "function") {
       busy(true);
@@ -394,7 +387,7 @@
     }
   }
 
-  /* Deep-link mode: hand the composed message to WhatsApp on the visitor's device. */
+  /* Deep-link mode: hand the composed message to the visitor's default email client. */
   function handoff(url) {
     var win = null;
     try {
@@ -406,16 +399,14 @@
       form.reset();
       setStatus(
         "ok",
-        'WhatsApp was blocked by your browser. <a href="' + url + '" target="_blank" rel="noopener">Click here to open your inquiry on WhatsApp →</a>'
+        'Your email client may be blocked by the browser. <a href="' + url + '" target="_blank" rel="noopener">Click here to email the Educrypt team →</a>'
       );
       window.location.href = url;
       return;
     }
     finish(
-      "Thank you — your inquiry is ready in WhatsApp (" +
-        WA_DISPLAY +
-        "). Press send there to reach the Educrypt technical team. Working days: Monday to Saturday.",
-      "Ready in WhatsApp \u2014 press send ✓"
+      "Thank you — your inquiry is ready in your email app. Press send to reach the Educrypt technical team at connect@educrypt.in.",
+      "Ready to email ✓"
     );
   }
 
